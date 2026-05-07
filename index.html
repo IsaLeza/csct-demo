@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CSCT — Clínica Sagrado Corazón Tehuacán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:   #0d1b3e;
+  --royal: #1e3a8a;
+  --vivid: #2563eb;
+  --sky:   #3b82f6;
+  --pale:  #eff4ff;
+  --frost: #f7f9ff;
+  --white: #ffffff;
+  --warm:  #fafaf8;
+  --muted: #64748b;
+  --rule:  rgba(13,27,62,.10);
+  --ease:  cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--white);overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+#cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--vivid);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s var(--ease),height .25s var(--ease),opacity .2s;mix-blend-mode:multiply;}
+#cursor.big{width:44px;height:44px;opacity:.3;}
+@media(hover:none){#cursor{display:none;}body{cursor:auto;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 4vw;height:72px;transition:background .4s,box-shadow .4s;}
+nav.scrolled{background:rgba(255,255,255,.94);backdrop-filter:blur(20px);box-shadow:0 1px 0 var(--rule);}
+.nav-logo img{height:60px;display:block;}
+.nav-right{display:flex;align-items:center;gap:2.5rem;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{font-size:.77rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.55;transition:opacity .2s;}
+.nav-links a:hover{opacity:1;}
+.nav-btn{display:inline-flex;align-items:center;padding:.55rem 1.5rem;border:1.5px solid var(--ink);border-radius:2px;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:background .2s,color .2s;}
+.nav-btn:hover{background:var(--ink);color:var(--white);}
+
+/* HERO */
+.hero{min-height:100svh;display:grid;grid-template-rows:1fr auto;padding:120px 4vw 0;background:var(--warm);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:64px 64px;opacity:.55;}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:6vw;padding-bottom:90px;}
+
+.hero-kicker{display:flex;align-items:center;gap:.75rem;margin-bottom:2.2rem;opacity:0;animation:up .8s .05s var(--ease) forwards;}
+.hero-kicker-line{width:34px;height:1px;background:var(--vivid);}
+.hero-kicker-text{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--vivid);}
+
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(3.2rem,5.8vw,6.2rem);font-weight:400;line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin-bottom:2rem;opacity:0;animation:up .9s .15s var(--ease) forwards;}
+.hero-h1 em{font-style:italic;background:linear-gradient(130deg,var(--royal) 0%,var(--sky) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.hero-desc{font-size:1.05rem;font-weight:300;line-height:1.85;color:var(--muted);max-width:400px;margin-bottom:3rem;opacity:0;animation:up .9s .25s var(--ease) forwards;}
+.hero-actions{display:flex;align-items:center;gap:2rem;opacity:0;animation:up .9s .35s var(--ease) forwards;}
+.cta-primary{display:inline-block;padding:.88rem 2.4rem;background:var(--ink);color:var(--white);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;transition:background .2s,transform .15s;}
+.cta-primary:hover{background:var(--royal);transform:translateY(-2px);}
+.cta-ghost{font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .2s;}
+.cta-ghost:hover{color:var(--ink);}
+.cta-ghost svg{width:15px;height:15px;transition:transform .2s;}
+.cta-ghost:hover svg{transform:translateX(4px);}
+
+.hero-right{opacity:0;animation:up .9s .3s var(--ease) forwards;}
+.hero-quote{padding:2rem 2rem 2rem 2.2rem;border-left:3px solid var(--vivid);background:rgba(37,99,235,.04);border-radius:0 6px 6px 0;margin-bottom:2.5rem;}
+.hero-quote p{font-family:'Libre Baskerville',serif;font-size:.97rem;font-style:italic;line-height:1.8;color:var(--royal);}
+.hero-quote cite{display:block;margin-top:.8rem;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-style:normal;}
+
+.hero-stats{border-top:1px solid var(--rule);padding-top:2.2rem;display:grid;grid-template-columns:repeat(3,1fr);}
+.hero-stat{padding-right:2rem;border-right:1px solid var(--rule);margin-right:2rem;}
+.hero-stat:last-child{border-right:none;margin-right:0;}
+.stat-n{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:400;color:var(--ink);line-height:1;margin-bottom:.3rem;}
+.stat-l{font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+
+/* TICKER */
+.hero-ticker{position:relative;z-index:2;border-top:1px solid var(--rule);overflow:hidden;height:50px;display:flex;align-items:center;background:var(--ink);}
+.ticker-track{display:flex;white-space:nowrap;animation:ticker 30s linear infinite;}
+.ticker-track span{font-size:.7rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);padding:0 2.5rem;}
+.ticker-track span strong{color:rgba(255,255,255,.85);font-weight:600;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* MANIFESTO */
+.manifesto{background:var(--ink);padding:clamp(80px,10vw,130px) 4vw;display:grid;grid-template-columns:1fr 1fr;gap:8vw;align-items:start;}
+.manifesto .s-label-line{background:var(--sky);}
+.manifesto .s-label-text{color:var(--sky);}
+.manifesto .s-title{color:var(--white);}
+.manifesto .s-title em{color:var(--sky);}
+.manifesto-body{margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.1);padding-top:2rem;}
+.manifesto-body p{font-size:.97rem;font-weight:300;line-height:1.9;color:rgba(255,255,255,.55);margin-bottom:1.4rem;}
+.manifesto-body p:last-child{margin-bottom:0;}
+.value-item{padding:2rem 0;border-bottom:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:32px 1fr;gap:1.4rem;}
+.value-item:first-child{border-top:1px solid rgba(255,255,255,.08);}
+.value-num{font-family:'Playfair Display',serif;font-size:.82rem;color:rgba(255,255,255,.2);padding-top:.15rem;}
+.value-text h3{font-size:.97rem;font-weight:500;color:var(--white);margin-bottom:.4rem;}
+.value-text p{font-size:.84rem;font-weight:300;line-height:1.7;color:rgba(255,255,255,.45);}
+
+/* CIFRAS */
+.cifras-section{background:var(--pale);padding:clamp(70px,8vw,110px) 4vw;}
+.cifras-inner{display:grid;grid-template-columns:repeat(4,1fr);}
+.cifra{padding:0 2.5rem 0 0;border-right:1px solid rgba(13,27,62,.12);}
+.cifra:last-child{border-right:none;padding-right:0;}
+.cifra:not(:first-child){padding-left:2.5rem;}
+.cifra-n{font-family:'Playfair Display',serif;font-size:clamp(3rem,5vw,5.5rem);font-weight:400;color:var(--ink);line-height:1;margin-bottom:.6rem;letter-spacing:-.02em;}
+.cifra-n span{color:var(--vivid);}
+.cifra-title{font-size:.82rem;font-weight:500;color:var(--ink);margin-bottom:.4rem;}
+.cifra-desc{font-size:.77rem;font-weight:300;color:var(--muted);line-height:1.65;}
+
+/* SERVICIOS */
+.servicios-section{background:var(--frost);padding:clamp(80px,10vw,140px) 4vw;}
+.servicios-layout{display:grid;grid-template-columns:1fr 2fr;gap:6vw;margin-top:5rem;}
+.servicios-sticky{position:sticky;top:100px;height:fit-content;}
+.servicios-sticky p{font-size:.95rem;font-weight:300;line-height:1.85;color:var(--muted);margin-top:1.4rem;}
+.servicios-list{display:flex;flex-direction:column;}
+.servicio-row{display:grid;grid-template-columns:48px 1fr 24px;gap:1.5rem;align-items:center;padding:2.2rem 0;border-bottom:1px solid var(--rule);cursor:default;transition:padding-left .35s var(--ease);position:relative;overflow:hidden;}
+.servicio-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(37,99,235,.05),transparent);transition:width .45s var(--ease);}
+.servicio-row:hover{padding-left:1rem;}
+.servicio-row:hover::before{width:100%;}
+.servicio-row:first-child{border-top:1px solid var(--rule);}
+.serv-num{font-family:'Playfair Display',serif;font-size:1rem;color:rgba(13,27,62,.18);font-weight:400;transition:color .3s;}
+.servicio-row:hover .serv-num{color:var(--vivid);}
+.serv-body h3{font-size:1.12rem;font-weight:500;color:var(--ink);margin-bottom:.3rem;transition:color .3s;}
+.servicio-row:hover .serv-body h3{color:var(--royal);}
+.serv-body p{font-size:.84rem;font-weight:300;color:var(--muted);line-height:1.65;}
+.serv-arrow{opacity:0;transform:translateX(-6px);transition:opacity .3s,transform .3s var(--ease);color:var(--vivid);}
+.serv-arrow svg{width:18px;height:18px;}
+.servicio-row:hover .serv-arrow{opacity:1;transform:translateX(0);}
+
+/* SECTION HELPERS */
+.section{padding:clamp(80px,10vw,140px) 4vw;}
+.s-label{display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;}
+.s-label-line{width:28px;height:1px;background:var(--vivid);}
+.s-label-text{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--vivid);}
+.s-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.8rem);font-weight:400;line-height:1.12;color:var(--ink);}
+.s-title em{font-style:italic;color:var(--royal);}
+
+/* EQUIPO */
+.equipo-header{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:end;margin-bottom:5rem;}
+.equipo-header-desc{font-size:1rem;font-weight:300;line-height:1.85;color:var(--muted);}
+.equipo-list{display:flex;flex-direction:column;}
+.doctor-row{display:grid;grid-template-columns:220px 1fr 1fr;gap:3rem;align-items:center;padding:3rem 0;border-bottom:1px solid var(--rule);}
+.doctor-row:first-child{border-top:1px solid var(--rule);}
+.doctor-portrait{width:100%;aspect-ratio:3/4;background:linear-gradient(160deg,var(--pale) 0%,#c7d8f8 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.doctor-portrait svg{width:70px;height:70px;stroke:var(--royal);fill:none;stroke-width:.8;opacity:.25;}
+.doctor-portrait-label{position:absolute;bottom:0;left:0;right:0;padding:.7rem 1rem;background:linear-gradient(transparent,rgba(13,27,62,.5));font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);}
+.doctor-main h2{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:400;color:var(--ink);margin-bottom:.3rem;}
+.doctor-main .specialty{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--vivid);margin-bottom:1.2rem;}
+.doctor-main p{font-size:.88rem;font-weight:300;line-height:1.75;color:var(--muted);}
+.doctor-tags{display:flex;flex-direction:column;gap:.7rem;}
+.dtag{display:flex;align-items:center;gap:.7rem;font-size:.8rem;font-weight:400;color:var(--ink);}
+.dtag::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--vivid);flex-shrink:0;}
+
+/* CONTACTO */
+.contacto-layout{display:grid;grid-template-columns:1fr 1fr;gap:6vw;margin-top:4.5rem;align-items:start;}
+.info-line{display:flex;align-items:flex-start;gap:1.4rem;padding:1.8rem 0;border-bottom:1px solid var(--rule);}
+.info-line:first-child{border-top:1px solid var(--rule);}
+.info-ico{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:.1rem;}
+.info-ico svg{width:22px;height:22px;stroke:var(--vivid);fill:none;stroke-width:1.6;}
+.info-line-body strong{display:block;font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--vivid);margin-bottom:.4rem;}
+.info-line-body p{font-size:.93rem;font-weight:300;color:var(--ink);line-height:1.65;}
+.horario-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 2rem;margin-top:3rem;}
+.horario-item{padding:.8rem 0;border-bottom:1px solid var(--rule);}
+.horario-day{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem;}
+.horario-time{font-size:.9rem;font-weight:400;color:var(--ink);}
+.horario-item.hl .horario-time{color:var(--vivid);font-weight:500;}
+
+/* FORM */
+.form-wrap{background:var(--ink);border-radius:6px;padding:3.5rem;}
+.form-title{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:400;color:var(--white);margin-bottom:.7rem;}
+.form-sub{font-size:.84rem;font-weight:300;color:rgba(255,255,255,.45);margin-bottom:2.5rem;line-height:1.7;}
+.f-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.1rem;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+label{font-size:.66rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+input,select,textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11);border-radius:3px;padding:.82rem 1rem;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:300;color:var(--white);outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none;}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.22);}
+input:focus,select:focus,textarea:focus{border-color:var(--sky);background:rgba(255,255,255,.07);}
+select option{background:#1e293b;}
+textarea{min-height:100px;resize:vertical;}
+.f-submit{width:100%;margin-top:1.6rem;padding:1rem;background:var(--vivid);color:var(--white);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border:none;border-radius:3px;cursor:pointer;transition:background .2s,transform .15s;}
+.f-submit:hover{background:var(--sky);transform:translateY(-2px);}
+
+/* FOOTER */
+footer{background:var(--warm);border-top:1px solid var(--rule);padding:70px 4vw 48px;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4vw;padding-bottom:4rem;border-bottom:1px solid var(--rule);}
+.footer-brand img{height:34px;display:block;margin-bottom:1.4rem;}
+.footer-brand p{font-size:.86rem;font-weight:300;color:var(--muted);line-height:1.75;max-width:260px;}
+.f-col h4{font-size:.66rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);opacity:.35;margin-bottom:1.2rem;}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+.f-col ul li a{font-size:.86rem;font-weight:300;color:var(--muted);text-decoration:none;transition:color .2s;}
+.f-col ul li a:hover{color:var(--ink);}
+.footer-bottom{margin-top:2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;}
+.footer-bottom p{font-size:.74rem;color:var(--muted);font-weight:300;}
+
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .85s var(--ease),transform .85s var(--ease);}
+.reveal.in{opacity:1;transform:none;}
+.reveal[data-d="1"]{transition-delay:.1s;}
+.reveal[data-d="2"]{transition-delay:.2s;}
+.reveal[data-d="3"]{transition-delay:.3s;}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:4rem;}
+  .manifesto{grid-template-columns:1fr;}
+  .servicios-layout{grid-template-columns:1fr;}
+  .servicios-sticky{position:static;}
+  .equipo-header{grid-template-columns:1fr;}
+  .doctor-row{grid-template-columns:160px 1fr;}
+  .doctor-tags{display:none;}
+  .cifras-inner{grid-template-columns:1fr 1fr;gap:2rem 0;}
+  .cifra{padding:2rem 2rem 2rem 0;}
+  .cifra:nth-child(2){border-right:none;}
+  .cifra:nth-child(3){border-right:1px solid rgba(13,27,62,.12);}
+  .contacto-layout{grid-template-columns:1fr;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:680px){
+  .nav-links{display:none;}
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .hero-stat:last-child{display:none;}
+  .f-row{grid-template-columns:1fr;}
+  .cifras-inner{grid-template-columns:1fr 1fr;}
+  .cifra{padding:1.5rem 1.5rem 1.5rem 0;}
+  .cifra:nth-child(2){border-right:none;}
+  .cifra:nth-child(3){border-right:1px solid rgba(13,27,62,.12);}
+  .footer-top{grid-template-columns:1fr;}
+  .form-wrap{padding:2rem 1.6rem;}
+  .doctor-row{grid-template-columns:1fr;}
+  .doctor-portrait{max-width:180px;aspect-ratio:1/1;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">
+    <img src="logo.png" alt="CSCT"/>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#equipo">Equipo</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="nav-btn">Agendar cita</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-kicker">
+        <span class="hero-kicker-line"></span>
+        <span class="hero-kicker-text">Clínica Sagrado Corazón · Tehuacán</span>
+      </div>
+      <h1 class="hero-h1">Medicina<br/>con alma<br/><em>y precisión.</em></h1>
+      <p class="hero-desc">Atención médica integral pensada en cada persona. Especialistas, tecnología de vanguardia y la calidez humana que tu salud merece.</p>
+      <div class="hero-actions">
+        <a href="#contacto" class="cta-primary">Agendar una consulta</a>
+        <a href="#servicios" class="cta-ghost">Ver especialidades <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-quote">
+        <p>"Cada paciente es una historia única. Nuestra misión es acompañarla con rigor médico y profunda humanidad."</p>
+        <cite>— Dirección médica, CSCT</cite>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="stat-n">+20</div>
+          <div class="stat-l">Años de experiencia</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-n">15+</div>
+          <div class="stat-l">Especialidades</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-n">24/7</div>
+          <div class="stat-l">Urgencias</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-ticker">
+    <div class="ticker-track">
+      <span><strong>Medicina General</strong></span><span>·</span>
+      <span><strong>Pediatría</strong></span><span>·</span>
+      <span><strong>Cirugía General</strong></span><span>·</span>
+      <span><strong>Laboratorio Clínico</strong></span><span>·</span>
+      <span><strong>Imagen y Diagnóstico</strong></span><span>·</span>
+      <span><strong>Urgencias 24/7</strong></span><span>·</span>
+      <span><strong>Ginecología</strong></span><span>·</span>
+      <span><strong>Traumatología</strong></span><span>·</span>
+      <span><strong>Medicina General</strong></span><span>·</span>
+      <span><strong>Pediatría</strong></span><span>·</span>
+      <span><strong>Cirugía General</strong></span><span>·</span>
+      <span><strong>Laboratorio Clínico</strong></span><span>·</span>
+      <span><strong>Imagen y Diagnóstico</strong></span><span>·</span>
+      <span><strong>Urgencias 24/7</strong></span><span>·</span>
+      <span><strong>Ginecología</strong></span><span>·</span>
+      <span><strong>Traumatología</strong></span><span>·</span>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO / NOSOTROS -->
+<section class="manifesto" id="nosotros">
+  <div class="reveal">
+    <div class="s-label"><span class="s-label-line"></span><span class="s-label-text">Quiénes somos</span></div>
+    <h2 class="s-title">Más de dos décadas<br/>cuidando <em>vidas.</em></h2>
+    <div class="manifesto-body">
+      <p>La Clínica Sagrado Corazón Tehuacán nació con la convicción de que cada persona merece atención médica de calidad, cercana y profundamente humana. Desde nuestros inicios hemos construido un espacio donde la ciencia y la calidez se complementan.</p>
+      <p>Hoy somos referencia regional en diagnóstico oportuno, cirugía y atención especializada. Nuestra infraestructura moderna y nuestros procesos están diseñados con la seguridad del paciente como prioridad absoluta.</p>
+    </div>
+  </div>
+  <div class="reveal" data-d="2">
+    <div class="value-item"><div class="value-num">01</div><div class="value-text"><h3>Excelencia clínica</h3><p>Estándares médicos internacionales aplicados en cada consulta, procedimiento y diagnóstico.</p></div></div>
+    <div class="value-item"><div class="value-num">02</div><div class="value-text"><h3>Atención centrada en la persona</h3><p>El paciente y su familia son el centro de cada decisión médica que tomamos.</p></div></div>
+    <div class="value-item"><div class="value-num">03</div><div class="value-text"><h3>Tecnología al servicio de la salud</h3><p>Equipos de vanguardia que respaldan diagnósticos precisos y tratamientos eficaces.</p></div></div>
+    <div class="value-item"><div class="value-num">04</div><div class="value-text"><h3>Ética e integridad</h3><p>Transparencia y honestidad en cada relación con nuestros pacientes y su entorno.</p></div></div>
+  </div>
+</section>
+
+<!-- CIFRAS -->
+<section class="cifras-section">
+  <div class="cifras-inner">
+    <div class="cifra reveal"><div class="cifra-n">20<span>+</span></div><div class="cifra-title">Años de servicio</div><div class="cifra-desc">Construyendo confianza en la región poblana desde nuestros inicios.</div></div>
+    <div class="cifra reveal" data-d="1"><div class="cifra-n">15<span>+</span></div><div class="cifra-title">Especialidades médicas</div><div class="cifra-desc">Cobertura integral para todas las etapas de salud.</div></div>
+    <div class="cifra reveal" data-d="2"><div class="cifra-n">24<span>/7</span></div><div class="cifra-title">Urgencias disponibles</div><div class="cifra-desc">Atención inmediata todos los días del año.</div></div>
+    <div class="cifra reveal" data-d="3"><div class="cifra-n">1<span>er</span></div><div class="cifra-title">Lugar de confianza</div><div class="cifra-desc">Primera opción de cientos de familias de Tehuacán.</div></div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="servicios-section" id="servicios">
+  <div class="s-label reveal"><span class="s-label-line"></span><span class="s-label-text">Especialidades</span></div>
+  <h2 class="s-title reveal" data-d="1">Lo que <em>ofrecemos.</em></h2>
+  <div class="servicios-layout">
+    <div class="servicios-sticky reveal">
+      <p>Un conjunto de servicios médicos integrados, pensados para acompañarte en cada etapa de tu salud y la de tu familia.</p>
+    </div>
+    <div class="servicios-list">
+      <div class="servicio-row reveal"><div class="serv-num">01</div><div class="serv-body"><h3>Medicina General</h3><p>Consultas de atención primaria, diagnóstico oportuno y seguimiento continuo para toda la familia.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal" data-d="1"><div class="serv-num">02</div><div class="serv-body"><h3>Pediatría</h3><p>Atención especializada para niños y adolescentes con enfoque preventivo e integral.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal" data-d="2"><div class="serv-num">03</div><div class="serv-body"><h3>Cirugía General</h3><p>Procedimientos quirúrgicos con equipos modernos y cirujanos altamente certificados.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal"><div class="serv-num">04</div><div class="serv-body"><h3>Laboratorio Clínico</h3><p>Análisis clínicos con resultados rápidos y precisos, respaldados por tecnología de punta.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal" data-d="1"><div class="serv-num">05</div><div class="serv-body"><h3>Imagen y Diagnóstico</h3><p>Ultrasonido, rayos X y estudios digitales para decisiones médicas certeras.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal" data-d="2"><div class="serv-num">06</div><div class="serv-body"><h3>Ginecología y Obstetricia</h3><p>Acompañamiento integral en salud femenina, embarazo y etapas reproductivas.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal"><div class="serv-num">07</div><div class="serv-body"><h3>Traumatología y Ortopedia</h3><p>Diagnóstico y tratamiento de lesiones, fracturas y rehabilitación musculoesquelética.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+      <div class="servicio-row reveal" data-d="1"><div class="serv-num">08</div><div class="serv-body"><h3>Urgencias 24/7</h3><p>Atención inmediata disponible todos los días del año, sin excepción.</p></div><div class="serv-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section class="section" id="equipo" style="background:var(--white);">
+  <div class="equipo-header">
+    <div class="reveal">
+      <div class="s-label"><span class="s-label-line"></span><span class="s-label-text">Nuestro equipo</span></div>
+      <h2 class="s-title">Especialistas a<br/>tu <em>disposición.</em></h2>
+    </div>
+    <p class="equipo-header-desc reveal" data-d="2">Médicos certificados con formación continua y años de experiencia clínica, comprometidos con ofrecerte la mejor atención en cada visita.</p>
+  </div>
+  <div class="equipo-list">
+    <div class="doctor-row reveal">
+      <div class="doctor-portrait"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="doctor-portrait-label">Medicina Interna</div></div>
+      <div class="doctor-main"><div class="specialty">Medicina Interna</div><h2>Dr. Carlos Morales</h2><p>Especialista con más de 15 años de experiencia en el diagnóstico y tratamiento de enfermedades crónicas y agudas del adulto. Formación en el Instituto Nacional de Ciencias Médicas y Nutrición.</p></div>
+      <div class="doctor-tags"><div class="dtag">Certificado por el CMMI</div><div class="dtag">Diabetes y Metabolismo</div><div class="dtag">Enfermedades cardiovasculares</div><div class="dtag">Atención preventiva del adulto</div></div>
+    </div>
+    <div class="doctor-row reveal" data-d="1">
+      <div class="doctor-portrait"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="doctor-portrait-label">Pediatría</div></div>
+      <div class="doctor-main"><div class="specialty">Pediatría</div><h2>Dra. Ana Reyes</h2><p>Pediatra certificada con enfoque preventivo e integral al desarrollo infantil y adolescente. Especialista en neonatología y enfermedades respiratorias pediátricas con amplia experiencia en la región.</p></div>
+      <div class="doctor-tags"><div class="dtag">Certificada por la ABP</div><div class="dtag">Neonatología</div><div class="dtag">Desarrollo infantil</div><div class="dtag">Vacunación y prevención</div></div>
+    </div>
+    <div class="doctor-row reveal" data-d="2">
+      <div class="doctor-portrait"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="doctor-portrait-label">Cirugía General</div></div>
+      <div class="doctor-main"><div class="specialty">Cirugía General</div><h2>Dr. Roberto Sánchez</h2><p>Cirujano formado en técnicas laparoscópicas y con más de una década de práctica quirúrgica en la región. Referente en cirugía de mínima invasión en el estado de Puebla.</p></div>
+      <div class="doctor-tags"><div class="dtag">Certificado por el CMC</div><div class="dtag">Cirugía laparoscópica</div><div class="dtag">Cirugía de vesícula y hernia</div><div class="dtag">Oncología quirúrgica</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="section" id="contacto" style="background:var(--frost);">
+  <div class="s-label reveal"><span class="s-label-line"></span><span class="s-label-text">Contáctanos</span></div>
+  <h2 class="s-title reveal" data-d="1">Agenda tu <em>cita</em><br/>hoy mismo.</h2>
+  <div class="contacto-layout">
+    <div class="reveal" data-d="1">
+      <div class="info-line"><div class="info-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="info-line-body"><strong>Dirección</strong><p>Calle Reforma No. 215, Col. Centro<br/>Tehuacán, Puebla. C.P. 75700</p></div></div>
+      <div class="info-line"><div class="info-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.82-.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div class="info-line-body"><strong>Teléfono</strong><p>(238) 382-0000<br/>Urgencias: (238) 382-0001</p></div></div>
+      <div class="info-line"><div class="info-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="info-line-body"><strong>Correo</strong><p>contacto@csct.com.mx</p></div></div>
+      <div class="horario-grid">
+        <div class="horario-item"><div class="horario-day">Lunes – Viernes</div><div class="horario-time">8:00 am – 8:00 pm</div></div>
+        <div class="horario-item"><div class="horario-day">Sábados</div><div class="horario-time">9:00 am – 2:00 pm</div></div>
+        <div class="horario-item hl"><div class="horario-day">Urgencias</div><div class="horario-time">24 hrs · 7 días</div></div>
+        <div class="horario-item"><div class="horario-day">Laboratorio</div><div class="horario-time">7:00 am – 6:00 pm</div></div>
+      </div>
+    </div>
+    <div class="form-wrap reveal" data-d="2">
+      <h3 class="form-title">Solicita tu consulta</h3>
+      <p class="form-sub">Completa el formulario y nuestro equipo se pondrá en contacto contigo a la brevedad para confirmar tu cita.</p>
+      <div class="f-row"><div class="f-group"><label>Nombre</label><input type="text" placeholder="Tu nombre"/></div><div class="f-group"><label>Apellido</label><input type="text" placeholder="Tu apellido"/></div></div>
+      <div class="f-row"><div class="f-group"><label>Teléfono</label><input type="tel" placeholder="(238) 000-0000"/></div><div class="f-group"><label>Correo</label><input type="email" placeholder="tu@correo.com"/></div></div>
+      <div class="f-group"><label>Especialidad</label><select><option value="">Selecciona una especialidad</option><option>Medicina General</option><option>Pediatría</option><option>Cirugía General</option><option>Ginecología y Obstetricia</option><option>Traumatología</option><option>Laboratorio</option><option>Urgencias</option></select></div>
+      <div class="f-group"><label>Motivo de consulta</label><textarea placeholder="Describe brevemente el motivo de tu visita…"></textarea></div>
+      <button class="f-submit" onclick="this.textContent='✓ Solicitud enviada';this.style.background='#16a34a';">Enviar solicitud</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand"><img src="logo.png" alt="CSCT"/><p>Cuidando la salud de Tehuacán y la región poblana con excelencia médica y calidez humana desde hace más de dos décadas.</p></div>
+    <div class="f-col"><h4>Servicios</h4><ul><li><a href="#servicios">Medicina General</a></li><li><a href="#servicios">Pediatría</a></li><li><a href="#servicios">Cirugía General</a></li><li><a href="#servicios">Ginecología</a></li><li><a href="#servicios">Laboratorio</a></li><li><a href="#servicios">Urgencias 24/7</a></li></ul></div>
+    <div class="f-col"><h4>Clínica</h4><ul><li><a href="#nosotros">Quiénes somos</a></li><li><a href="#equipo">Nuestro equipo</a></li><li><a href="#contacto">Contacto</a></li><li><a href="#contacto">Agendar cita</a></li></ul></div>
+    <div class="f-col"><h4>Contacto</h4><ul><li><a href="tel:2383820000">(238) 382-0000</a></li><li><a href="mailto:contacto@csct.com.mx">contacto@csct.com.mx</a></li><li><a href="#">Reforma 215, Tehuacán</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 isaSoft. Todos los derechos reservados.</p><p>Página Demo</p></div>
+</footer>
+
+<script>
+// Custom cursor
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+document.querySelectorAll('a,button,.servicio-row,.doctor-row').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+// Nav
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
+
+// Reveal
+const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('in'); }), {threshold:.1, rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+</script>
+</body>
+</html>
